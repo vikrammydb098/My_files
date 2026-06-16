@@ -1,0 +1,28 @@
+AWS Access Keys                 Region name (ap-south-1)
+AWS Role ARN                    Branch name
+S3 Bucket name                  Build version
+Database passwords              Project directory name
+API tokens                      Echo messages
+SSH private keys                Step names
+Docker passwords
+
+
+Secret 1:
+─────────
+Name  → AWS_ROLE_ARN
+Value → arn:aws:iam::YOUR_ACCOUNT_ID:role/YOUR_ROLE_NAME
+
+Secret 2:
+─────────
+Name  → AWS_REGION
+Value → ap-south-1
+
+Secret 3:
+─────────
+Name  → AWS_S3_BUCKET
+Value → your-bucket-name
+
+Secret 4:
+─────────
+Name  → S3_PROJECT_PATH
+Value → myproject/codex
