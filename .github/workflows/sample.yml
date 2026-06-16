@@ -1,0 +1,42 @@
+name: Push Code to S3 on PR Merge
+# Managed by: DevOps Team
+# Author: Vishal S
+# Description: Triggers when a push is merged into main and syncs code to S3
+
+on:
+    push:
+      branches:
+        - main                          # Trigger on direct pushes to main                       
+
+jobs:
+  push-to-s3:
+    name: Sync Code to S3
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write                 # Required for OIDC-based AWS authentication
+      contents: read                  # Required to checkout the repository
+
+    steps:
+
+      # Step 1: Checkout the latest code from main
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      # Step 2: Authenticate to AWS using OIDC (no static keys needed)
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      # Step 3: Sync the repository content to the target S3 bucket
+      - name: Upload Code to S3
+        run: |
+          aws s3 sync . s3://${{ secrets.AWS_S3_BUCKET }}/${{ secrets.S3_PROJECT_PATH }} 
+
+      # Step 4: Print a summary of what was uploaded
+      - name: Confirm Upload
+        run: |
+          echo "✅ Code successfully pushed to S3"
+          echo "Bucket  : ${{ secrets.AWS_S3_BUCKET }}"
+          echo "Path    : ${{ secrets.S3_PROJECT_PATH }}"
